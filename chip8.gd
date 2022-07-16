@@ -12,16 +12,20 @@ var program = [
 	0x00, 0xe0, 0x00, 0xe0,
 ]
 
+var program1: PoolByteArray;
+
 onready var screen = get_node("screen")	
 onready var memory = get_node("memory")		
 onready var cpu = get_node("cpu")
 
 func _ready():	
-	memory.load_data(0x200, program)
-	screen.init_screen()
+	pass
+	#memory.load_data(0x200, program1)
+	#screen.init_screen()
 	
 func _process(delta):
 	read_input()
+	print(delta)
 	cycle()
 	screen.display_screen()
 	
@@ -48,3 +52,13 @@ func read_input():
 	memory.write_key(0xE, Input.is_action_pressed("E"))
 	memory.write_key(0xF, Input.is_action_pressed("F"))
 	
+func initialise(path):
+	var f = File.new()
+	f.open(path, File.READ)
+	
+	var length = f.get_len()
+	program1 = f.get_buffer(length)	
+	
+	memory.load_data(0x200, program1)
+	screen.init_screen()
+	print(program1)

@@ -36,6 +36,7 @@ func load_data(addr: int, data: Array) -> void:
 	assert(data != null, "Attempting to load invalid data!")
 	for i in data.size():
 		self.write_byte(addr + i, data[i])
+	print(memory.subarray(0x200, 0x250))
 	
 func read_byte(addr: int) -> int:
 	assert(addr >= 0 && addr < memory.size(), "Attempting to read byte at invalid address %d!" % addr)

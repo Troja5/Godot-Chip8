@@ -30,8 +30,9 @@ func tick(inst: int) -> int:
 			var addr = (inst & 0x0FFF)
 			pc = addr
 		0x2:
+			pc += 2
 			s.push_back(pc)
-			var addr = (inst & 0xFFF)
+			var addr = (inst & 0x0FFF)
 			pc = addr
 		0x3:
 			var reg = (inst & 0x0F00) >> 8
@@ -193,8 +194,8 @@ func tick(inst: int) -> int:
 
 					pc += 2
 				0x0A:
-					for i in range(16):
-						if memory.read_key(i) == 1:
+					for idx in range(16):
+						if memory.read_key(idx) == 1:
 							pc += 2
 							break
 				0x15:
@@ -216,9 +217,26 @@ func tick(inst: int) -> int:
 
 					pc += 2
 				0x29:
-					assert(false, "UNIMPLEMENTED!")
+					var reg = (inst & 0xF00) >> 8
+					
+					var idx = v[reg]
+					
+					i = memory.FONT_ADDRESS + (idx * memory.FONT_LENGTH)
+					
+					pc += 2
 				0x33:
-					assert(false, "UNIMPLEMENTED!")
+					var reg = (inst & 0x0F00) >> 8
+					var value = v[reg]
+					
+					var hundreds: int = value / 100
+					var tens: int = (value / 10) % 19
+					var units: int = value % 10
+					
+					memory.write_byte(i, hundreds)
+					memory.write_byte(i + 1, tens)
+					memory.write_byte(i + 2, units)
+					
+					pc += 2
 				0x55:
 					for n in range(16):
 						memory.write_byte(i + n, v[n])
